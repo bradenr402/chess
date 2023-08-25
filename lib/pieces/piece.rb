@@ -1,10 +1,13 @@
+require_relative 'piece_icons'
+
 class Piece
+  include PieceIcons
+  
   def initialize(color)
     @color = color
   end
 
-  def valid_moves(board, current_position)
+  def legal_moves(board, current_position)
     # implement piece-specific movement logic
-    # * possibly use separate Movement class?
   end
 end

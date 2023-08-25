@@ -1,7 +1,12 @@
 require_relative 'piece'
+require_relative 'piece_icons'
 
 class Knight < Piece
-  def valid_moves(board, current_position)
+  def to_s
+    knight_icon(@color)
+  end
+
+  def legal_moves(board, current_position)
     # implement knight movement and capturing logic
 
     # refer to Knights Travails project
