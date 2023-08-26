@@ -20,21 +20,33 @@ class Board
   end
 
   def display
-    puts "\n    " + LETTERS.join(' ') + "\n\n"
+    system("clear") # clears the terminal
+    puts "\n   #{LETTERS.join('  ')}"
     i = 1
+    bg_light = true
     @board.each do |row|
-      print i.to_s + '  '
+      print "#{i.to_s} "
       row.each do |piece|
         if piece.is_a?(Piece)
-          print piece.to_s
+          if bg_light
+            print piece.to_s.bg_gray
+          else
+            print piece.to_s.bg_black
+          end
         else
-          print '  '
+          if bg_light
+            print '   '.bg_gray
+          else
+            print '   '.bg_black
+          end
         end
+        bg_light = !bg_light
       end
-      puts '   ' + i.to_s
+      bg_light = !bg_light
+      puts " #{i.to_s}"
       i += 1
     end
-    puts "\n    " + LETTERS.join(' ') + "\n\n"
+    puts "   #{LETTERS.join('  ')}\n\n"
   end
 
   def setup
