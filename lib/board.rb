@@ -13,10 +13,9 @@ class Board
   NUMBERS = (1..8).to_a
 
   def initialize
-    @board = Array.new(8) { Array.new(8) }
+    @board = Array.new(8) { Array.new(8, EmptySquare.new) }
 
     setup
-    display
   end
 
   def display
@@ -27,18 +26,10 @@ class Board
     @board.each do |row|
       print "#{(9 - i).to_s} "
       row.each do |piece|
-        if piece.is_a?(Piece)
-          if bg_light
-            print piece.to_s.bg_gray
-          else
-            print piece.to_s.bg_black
-          end
+        if bg_light
+          print piece.to_s.bg_gray
         else
-          if bg_light
-            print '   '.bg_gray
-          else
-            print '   '.bg_black
-          end
+          print piece.to_s.bg_black
         end
         bg_light = !bg_light
       end
