@@ -18,6 +18,8 @@ class Game
         break
       end
 
+      move = format_move(move)
+
       if legal_move?(move) && valid_move?(move)
         make_move(move)
         switch_player
@@ -29,15 +31,44 @@ class Game
 
   def prompt_move
     print "#{@current_player.color.capitalize}, your move: "
-    gets.chomp.downcase.split(' ') # returns move in format: ['xy', 'xy'], e.g. ['a1', 'b3']
+    gets.chomp
+  end
+
+  def format_move(move)
+    move_hash = {
+      'a' => 0,
+      'b' => 1,
+      'c' => 2,
+      'd' => 3,
+      'e' => 4,
+      'f' => 5,
+      'g' => 6,
+      'h' => 7,
+      '1' => 0,
+      '2' => 1,
+      '3' => 2,
+      '4' => 3,
+      '5' => 4,
+      '6' => 5,
+      '7' => 6,
+      '8' => 7,
+    }
+
+    move = move.downcase.split('')
+    move.delete(' ')
+
+    move[0] = move_hash[move[0]]
+    move[2] = move_hash[move[2]]
+
+    move[1] = move[1].to_i - 1
+    move[3] = move[3].to_i - 1
+
+    move
   end
 
   def valid_move?(move)
-    return false unless move.size == 2
-    move.each do |coord|
-      return false unless coord.size == 2 && ('a'..'h').include?(coord.split('')[0]) && ('1'..'8').include?(coord.split('')[1])
-    end
-    true
+    return false unless move.size == 4
+    move.all? { |coord| coord.between?(0, 7) }
   end
 
   def legal_move?(move)
