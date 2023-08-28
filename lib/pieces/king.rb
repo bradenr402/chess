@@ -8,6 +8,7 @@ class King < Piece
 
   def legal_moves(board, current_player, current_position)
     all_moves = []
+    
     (current_position[0] - 1..current_position[0] + 1).each do |x|
       (current_position[1] - 1..current_position[1] + 1).each do |y|
           all_moves << [x, y] if [x, y] != current_position && x.between?(0, 7) && y.between?(0, 7)
@@ -36,7 +37,7 @@ class King < Piece
         all_moves.delete(square)
       end
     end
-    
+
     all_moves
   end
 end
