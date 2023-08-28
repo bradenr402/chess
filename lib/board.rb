@@ -25,7 +25,7 @@ class Board
     i = 1
     bg_light = true
     @board.each do |row|
-      print "#{i.to_s} "
+      print "#{(9 - i).to_s} "
       row.each do |piece|
         if piece.is_a?(Piece)
           if bg_light
@@ -43,7 +43,7 @@ class Board
         bg_light = !bg_light
       end
       bg_light = !bg_light
-      puts " #{i.to_s}"
+      puts " #{(9 - i).to_s}"
       i += 1
     end
     puts "   #{LETTERS.join('  ')}\n\n"
