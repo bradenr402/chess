@@ -15,6 +15,7 @@ class Pawn < Piece
 
   def legal_moves(board, current_player, current_position)
     all_moves = []
+    
     if current_player.color == :black
       all_moves << [current_position[0], current_position[1] + 1]
       all_moves << [current_position[0], current_position[1] + 2] unless @has_moved
