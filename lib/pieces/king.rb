@@ -7,23 +7,23 @@ class King < Piece
   end
 
   def legal_moves(board, current_player, current_position)
-    all_moves = []
+    moves = []
 
     (current_position.first - 1..current_position.first + 1).each do |x|
       (current_position.last - 1..current_position.last + 1).each do |y|
-          all_moves << [x, y] if [x, y] != current_position && x.between?(0, 7) && y.between?(0, 7)
+          moves << [x, y] if [x, y] != current_position && x.between?(0, 7) && y.between?(0, 7)
       end
     end
 
-    all_moves.each do |square|
+    moves.each do |square|
       current_square = board.board[square.first][square.last]
       if current_square.color == current_player.color
-        all_moves.delete(square)
+        moves.delete(square)
       end
     end
 
     # remove move if square is adjacent to opponent's king
-    all_moves.each do |square|
+    moves.each do |square|
       adjacent_squares = []
       (square.first - 1..square.first + 1).each do |x|
         (square.last - 1..square.last + 1).each do |y|
@@ -34,10 +34,10 @@ class King < Piece
           current_square = board.board[square.first][square.last]
           current_square.is_a?(King) && current_square.color != current_player.color && current_square.color != :none
         end
-        all_moves.delete(square)
+        moves.delete(square)
       end
     end
 
-    all_moves
+    moves
   end
 end
