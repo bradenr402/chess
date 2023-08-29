@@ -15,13 +15,13 @@ class Pawn < Piece
 
   def legal_moves(board, current_player, current_position)
     all_moves = []
-    
+
     if current_player.color == :black
-      all_moves << [current_position[0], current_position[1] + 1]
-      all_moves << [current_position[0], current_position[1] + 2] unless @has_moved
+      all_moves << [current_position.first, current_position.last + 1]
+      all_moves << [current_position.first, current_position.last + 2] unless @has_moved
     else
-      all_moves << [current_position[0], current_position[1] - 1]
-      all_moves << [current_position[0], current_position[1] - 2] unless @has_moved
+      all_moves << [current_position.first, current_position.last - 1]
+      all_moves << [current_position.first, current_position.last - 2] unless @has_moved
     end
 
     # add en passant movement
