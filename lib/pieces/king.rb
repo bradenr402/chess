@@ -15,12 +15,7 @@ class King < Piece
       end
     end
 
-    moves.each do |square|
-      current_square = board.board[square.first][square.last]
-      if current_square.color == current_player.color
-        moves.delete(square)
-      end
-    end
+    moves.reject! { |square| board[square.first][square.last].color == current_player.color }
 
     # remove move if square is adjacent to opponent's king
     moves.each do |square|
@@ -31,7 +26,7 @@ class King < Piece
         end
       end
       if adjacent_squares.any? do |square|
-          current_square = board.board[square.first][square.last]
+          current_square = board[square.first][square.last]
           current_square.is_a?(King) && current_square.color != current_player.color && current_square.color != :none
         end
         moves.delete(square)

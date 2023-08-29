@@ -17,12 +17,7 @@ class Knight < Piece
       end
     end
 
-    moves.each do |square|
-      current_square = board.board[square.first][square.last]
-      if current_square.is_a?(Piece) && current_square.color == current_player.color
-        moves.delete(square)
-      end
-    end
+    moves.reject! { |square| board[square.first][square.last].color == current_player.color }
 
     moves
   end

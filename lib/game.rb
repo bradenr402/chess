@@ -76,7 +76,7 @@ class Game
     start_position = move.first(2)
     end_position = move.last(2)
     current_piece = @board.board[start_position[0]][start_position[1]]
-    legal_moves = current_piece.legal_moves(@board, @current_player, start_position)
+    legal_moves = current_piece.legal_moves(@board.board, @current_player, start_position)
 
     destination_square = @board.board[end_position[0]][end_position[1]]
     return false if destination_square.is_a?(Piece) && destination_square.color == @current_player.color
