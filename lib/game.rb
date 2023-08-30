@@ -1,6 +1,3 @@
-# require_relative 'board'
-# require_relative 'pieces/piece'
-
 class Game
   def initialize
     @board = Board.new
@@ -74,8 +71,8 @@ class Game
     start_position = move.first(2)
     end_position = move.last(2)
 
-    current_piece = @board.board[start_position.first][start_position.last]
-    legal_moves = current_piece.legal_moves(@board.board, @current_player, start_position)
+    piece = @board.board[start_position.first][start_position.last]
+    legal_moves = piece.legal_moves(@board.board, @current_player, start_position)
 
     legal_moves.include?(end_position)
   end
@@ -89,7 +86,30 @@ class Game
     @board.board[end_position.first][end_position.last] = piece
     @board.board[start_position.first][start_position.last] = EmptySquare.new
 
+    if [end_position] == piece.get_en_passant(@board.board, @current_player, start_position)
+      if @current_player.color == :black
+        @board.board[end_position.first][end_position.last - 1] = EmptySquare.new
+      else
+        @board.board[end_position.first][end_position.last + 1] = EmptySquare.new
+      end
+    end
+
     piece.has_moved = true if piece.is_a?(Pawn)
+
+    if piece.is_a?(Pawn) && (end_position.last - start_position.last == 2 || start_position.last - end_position.last == 2) # if pawn makes en passant move
+      x = end_position.first
+      y = end_position.last
+
+      square_left = @board.board[x - 1][y] unless @board.board[x - 1].nil?
+      if square_left.is_a?(Pawn) && square_left.color != @current_player.color
+        square_left.en_passant_allowed = true
+      end
+
+      square_right = @board.board[x + 1][y] unless @board.board[x + 1].nil?
+      if square_right.is_a?(Pawn) && square_right.color != @current_player.color
+        square_right.en_passant_allowed = true
+      end
+    end
   end
 
   def switch_player
