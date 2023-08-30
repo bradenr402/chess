@@ -17,7 +17,15 @@ class King < Piece
 
     moves.reject! { |square| board[square.first][square.last].color == current_player.color }
 
-    # remove move if square is adjacent to opponent's king
+    # remove squares adjacent to opponent's king from moves
+    remove_moves = remove_moves_next_to_king(board, current_player, current_position, moves)
+
+    moves - remove_moves
+  end
+
+  def remove_moves_next_to_king(board, current_player, current_position, moves)
+    illegal_moves = []
+
     moves.each do |square|
       adjacent_squares = []
       (square.first - 1..square.first + 1).each do |x|
@@ -29,10 +37,10 @@ class King < Piece
           current_square = board[square.first][square.last]
           current_square.is_a?(King) && current_square.color != current_player.color && current_square.color != :none
         end
-        moves.delete(square)
+        illegal_moves << square
       end
     end
 
-    moves
+    illegal_moves
   end
 end
