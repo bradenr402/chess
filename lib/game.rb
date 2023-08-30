@@ -19,8 +19,6 @@ class Game
         break
       end
 
-      # binding.pry
-
       move = format_move(move)
 
       if valid_move?(move) && legal_move?(move)
@@ -66,7 +64,7 @@ class Game
     return false if move.any? { |coord| coord.nil? }
 
     start_position = move.first(2)
-    square = @board.board[start_position[0]][start_position[1]]
+    square = @board.board[start_position.first][start_position.last]
     return false unless square.is_a?(Piece) && square.color == @current_player.color
 
     move.all? { |coord| coord.between?(0, 7) }
@@ -75,25 +73,21 @@ class Game
   def legal_move?(move)
     start_position = move.first(2)
     end_position = move.last(2)
-    current_piece = @board.board[start_position[0]][start_position[1]]
-    legal_moves = current_piece.legal_moves(@board.board, @current_player, start_position)
 
-    destination_square = @board.board[end_position[0]][end_position[1]]
-    return false if destination_square.is_a?(Piece) && destination_square.color == @current_player.color
+    current_piece = @board.board[start_position.first][start_position.last]
+    legal_moves = current_piece.legal_moves(@board.board, @current_player, start_position)
 
     legal_moves.include?(end_position)
   end
 
   def move_piece(move)
-    # update the board based on the move
-
     start_position = move.first(2)
     end_position = move.last(2)
 
-    piece = @board.board[start_position[0]][start_position[1]]
+    piece = @board.board[start_position.first][start_position.last]
 
-    @board.board[end_position[0]][end_position[1]] = piece
-    @board.board[start_position[0]][start_position[1]] = EmptySquare.new
+    @board.board[end_position.first][end_position.last] = piece
+    @board.board[start_position.first][start_position.last] = EmptySquare.new
 
     piece.has_moved = true if piece.is_a?(Pawn)
   end
