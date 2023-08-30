@@ -17,6 +17,7 @@ class Knight < Piece
       end
     end
 
+    # remove squares occupied by current player's piece
     moves.reject! { |square| board[square.first][square.last].color == current_player.color }
 
     moves

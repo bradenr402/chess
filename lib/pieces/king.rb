@@ -15,6 +15,7 @@ class King < Piece
       end
     end
 
+    # remove squares occupied by current player's piece
     moves.reject! { |square| board[square.first][square.last].color == current_player.color }
 
     # remove squares adjacent to opponent's king from moves
