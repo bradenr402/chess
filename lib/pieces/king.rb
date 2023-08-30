@@ -2,6 +2,13 @@ require_relative 'piece'
 require_relative 'piece_icons'
 
 class King < Piece
+  attr_accessor :has_moved
+
+  def initialize(color)
+    super
+    @has_moved = false
+  end
+
   def to_s
     king_icon(@color)
   end
