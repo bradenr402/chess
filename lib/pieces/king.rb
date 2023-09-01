@@ -11,14 +11,10 @@ class King < Piece
 
     (current_position.first - 1..current_position.first + 1).each do |x|
       (current_position.last - 1..current_position.last + 1).each do |y|
-          moves << [x, y] if [x, y] != current_position && x.between?(0, 7) && y.between?(0, 7)
+          moves << [x, y] if [x, y] != current_position && x.between?(0, 7) && y.between?(0, 7) && board[x][y].color != current_player.color
       end
     end
 
-    # remove squares occupied by current player's piece
-    moves.reject! { |square| board[square.first][square.last].color == current_player.color }
-
-    # remove squares adjacent to opponent's king from moves
     moves_to_remove = remove_moves_next_to_king(board, current_player, current_position, moves)
 
     moves - moves_to_remove

@@ -9,16 +9,15 @@ class Knight < Piece
   end
 
   def legal_moves(board, current_player, current_position)
+    x = current_position.first
+    y = current_position.last
     moves = []
 
     MOVES.each do |move|
-      if (current_position.first + move.first).between?(0, 7) && (current_position.last + move.last).between?(0, 7)
-        moves << [current_position.first + move.first, current_position.last + move.last]
+      if (x + move.first).between?(0, 7) && (y + move.last).between?(0, 7)
+        moves << [x + move.first, y + move.last] unless board[x + move.first][y + move.last].color == current_player.color
       end
     end
-
-    # remove squares occupied by current player's piece
-    moves.reject! { |square| board[square.first][square.last].color == current_player.color }
 
     moves
   end
