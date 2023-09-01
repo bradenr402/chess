@@ -12,6 +12,7 @@ require_relative 'pieces/bishop'
 require_relative 'pieces/king'
 require_relative 'pieces/queen'
 require_relative 'empty_square'
+require_relative 'utilities/get_char'
 
 def start_game
   loop do
@@ -31,4 +32,6 @@ def play_again?
   end
 end
 
+include GetChar
+require "pry-byebug"
 start_game
