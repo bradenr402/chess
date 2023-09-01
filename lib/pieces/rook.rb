@@ -7,8 +7,6 @@ class Rook < Piece
   end
 
   def legal_moves(board, current_player, current_position)
-    moves = []
-
     moves_right = get_moves_right(board, current_player, current_position)
     moves_left = get_moves_left(board, current_player, current_position)
     moves_down = get_moves_down(board, current_player, current_position)

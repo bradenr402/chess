@@ -15,13 +15,8 @@ class Pawn < Piece
   end
 
   def legal_moves(board, current_player, current_position)
-    # add forward movement
     forward_moves = get_forward_moves(board, current_player, current_position)
-
-    # add attack movement
     attacks = get_attacks(board, current_player, current_position)
-
-    # add en passant movement if allowed
     en_passant = @en_passant_allowed ? get_en_passant(board, current_player, current_position) : []
 
     forward_moves + attacks + en_passant
