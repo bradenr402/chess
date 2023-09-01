@@ -1,13 +1,3 @@
-# require_relative 'pieces/piece'
-# require_relative 'pieces/piece_icons'
-# require_relative 'pieces/pawn'
-# require_relative 'pieces/rook'
-# require_relative 'pieces/knight'
-# require_relative 'pieces/bishop'
-# require_relative 'pieces/king'
-# require_relative 'pieces/queen'
-# require_relative 'utilities/color'
-
 class Board
   attr_accessor :board
 
@@ -18,12 +8,11 @@ class Board
   end
 
   def display
-    system("clear") # clears the terminal
-    puts "\n   a  b  c  d  e  f  g  h"
+    puts "\n       a  b  c  d  e  f  g  h"
     i = 0
     bg_light = true
     while i < 8
-      print "#{8 - i} "
+      print "    #{8 - i} "
       j = 0
       while j < 8
         if bg_light
@@ -38,7 +27,7 @@ class Board
       print " #{8 - i}\n"
       i += 1
     end
-    puts "   a  b  c  d  e  f  g  h"
+    puts "       a  b  c  d  e  f  g  h\n\n"
   end
 
   def setup
