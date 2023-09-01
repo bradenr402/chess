@@ -23,7 +23,6 @@ class Pawn < Piece
 
     # add en passant movement if allowed
     en_passant = @en_passant_allowed ? get_en_passant(board, current_player, current_position) : []
-    @en_passant_allowed = false
 
     forward_moves + attacks + en_passant
   end
