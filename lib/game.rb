@@ -30,10 +30,19 @@ class Game
       move = format_move(move) unless move.include?('castle')
 
       if valid_move?(move) && legal_move?(move)
-        move_piece(move)
-        switch_player
+        if move == 'castle left'
+          castle_left
+        elsif move == 'castle right'
+          castle_right
+        else
+          move_piece(move)
+        end
       else
-        puts "Invalid move. Try again."
+        system('clear')
+        @board.display
+        puts '    Invalid move. Try again.'
+        blank_line = false
+        next
       end
       blank_line = true
 
@@ -73,6 +82,7 @@ class Game
   end
 
   def valid_move?(move)
+    return true if move == 'castle left' || move == 'castle right'
     return false unless move.size == 4
     return false if move.any? { |coord| coord.nil? }
 
@@ -84,6 +94,8 @@ class Game
   end
 
   def legal_move?(move)
+    return castle_allowed?(move) if move.include?('castle')
+
     start_position = move.first(2)
     end_position = move.last(2)
 
@@ -97,21 +109,35 @@ class Game
     start_position = move.first(2)
     end_position = move.last(2)
 
-    piece = @board.board[start_position.first][start_position.last]
+    piece = @board.board[start_position.first][start_position.last] # gets piece
+    @board.board[end_position.first][end_position.last] = piece # moves piece to new square
+    @board.board[start_position.first][start_position.last] = EmptySquare.new # removes piece from previous square
 
-    @board.board[end_position.first][end_position.last] = piece
-    @board.board[start_position.first][start_position.last] = EmptySquare.new
-
-    if [end_position] == piece.get_en_passant(@board.board, @current_player, start_position)
-      if @current_player.color == :black
-        @board.board[end_position.first][end_position.last - 1] = EmptySquare.new
-      else
-        @board.board[end_position.first][end_position.last + 1] = EmptySquare.new
+    if piece.is_a?(Pawn)
+      piece.has_moved = true
+      if attack_is_en_passant?(piece, start_position, end_position)
+        if @current_player.color == :black
+          @board.board[end_position.first][end_position.last - 1] = EmptySquare.new
+        else
+          @board.board[end_position.first][end_position.last + 1] = EmptySquare.new
+        end
       end
     end
 
-    piece.has_moved = true if piece.is_a?(Pawn)
+    disallow_all_en_passant
+    allow_en_passant(piece, start_position, end_position)
+    update_castle_allowed(piece, start_position, end_position)
+  end
 
+  def switch_player
+    @current_player.color = (@current_player.color == :white) ? :black : :white
+  end
+
+  def attack_is_en_passant?(piece, start_position, end_position)
+    [end_position] == piece.get_en_passant(@board.board, @current_player, start_position)
+  end
+
+  def allow_en_passant(piece, start_position, end_position)
     if piece.is_a?(Pawn) && (end_position.last - start_position.last == 2 || start_position.last - end_position.last == 2) # if pawn makes en passant move
       x = end_position.first
       y = end_position.last
@@ -128,8 +154,96 @@ class Game
     end
   end
 
-  def switch_player
-    @current_player.color = (@current_player.color == :white) ? :black : :white
+  def disallow_all_en_passant
+    @board.board.each do |row|
+      row.each do |piece|
+        if piece.is_a?(Pawn)
+          piece.en_passant_allowed = false
+        end
+      end
+    end
+  end
+
+  def update_castle_allowed(piece, start_position, end_position)
+    if piece.is_a?(King)
+      @current_player.castle_left_allowed = false
+      @current_player.castle_right_allowed = false
+    end
+
+    if piece.is_a?(Rook)
+      @current_player.castle_left_allowed = false if start_position == [0, 0] || start_position == [7, 0]
+      @current_player.castle_right_allowed = false if start_position == [0, 7] || start_position == [7, 7]
+    end
+  end
+
+  def castle_allowed?(move)
+    if move == 'castle left'
+      if @current_player.color == :black
+        return @current_player.castle_left_allowed &&
+               @board.board[1][0].is_a?(EmptySquare) &&
+               @board.board[2][0].is_a?(EmptySquare) &&
+               @board.board[3][0].is_a?(EmptySquare)
+      else
+        return @current_player.castle_left_allowed &&
+               @board.board[1][7].is_a?(EmptySquare) &&
+               @board.board[2][7].is_a?(EmptySquare) &&
+               @board.board[3][7].is_a?(EmptySquare)
+      end
+    elsif move == 'castle right'
+      if @current_player.color == :black
+        return @current_player.castle_right_allowed &&
+               @board.board[5][0].is_a?(EmptySquare) &&
+               @board.board[6][0].is_a?(EmptySquare)
+      else
+        return @current_player.castle_right_allowed &&
+               @board.board[5][7].is_a?(EmptySquare) &&
+               @board.board[6][7].is_a?(EmptySquare)
+      end
+    end
+  end
+
+  def castle_left
+    if @current_player.color == :black
+      rook = @board.board[0][0]
+      king = @board.board[4][0]
+
+      @board.board[3][0] = rook
+      @board.board[0][0] = EmptySquare.new
+
+      @board.board[2][0] = king
+      @board.board[4][0] = EmptySquare.new
+    else
+      rook = @board.board[0][7]
+      king = @board.board[4][7]
+
+      @board.board[3][7] = rook
+      @board.board[0][7] = EmptySquare.new
+
+      @board.board[2][7] = king
+      @board.board[4][7] = EmptySquare.new
+    end
+  end
+
+  def castle_right
+    if @current_player.color == :black
+      rook = @board.board[7][0]
+      king = @board.board[4][0]
+
+      @board.board[5][0] = rook
+      @board.board[7][0] = EmptySquare.new
+
+      @board.board[6][0] = king
+      @board.board[4][0] = EmptySquare.new
+    else
+      rook = @board.board[7][7]
+      king = @board.board[4][7]
+
+      @board.board[5][7] = rook
+      @board.board[7][7] = EmptySquare.new
+
+      @board.board[6][7] = king
+      @board.board[4][7] = EmptySquare.new
+    end
   end
 
   def check?
