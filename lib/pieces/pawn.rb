@@ -37,13 +37,13 @@ class Pawn < Piece
       forward_moves << [x, y + 1] unless square_in_front.is_a?(Piece)
 
       two_squares_in_front = board[x][y + 2]
-      forward_moves << [x, y + 2] unless @has_moved || two_squares_in_front.is_a?(Piece)
+      forward_moves << [x, y + 2] unless @has_moved ||square_in_front.is_a?(Piece) || two_squares_in_front.is_a?(Piece)
     else
       square_in_front = board[x][y - 1]
       forward_moves << [x, y - 1] unless square_in_front.is_a?(Piece)
 
       two_squares_in_front = board[x][y - 2]
-      forward_moves << [x, y - 2] unless @has_moved || two_squares_in_front.is_a?(Piece)
+      forward_moves << [x, y - 2] unless @has_moved ||square_in_front.is_a?(Piece)  || two_squares_in_front.is_a?(Piece)
     end
 
     forward_moves
