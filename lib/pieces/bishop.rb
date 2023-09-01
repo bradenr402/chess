@@ -7,49 +7,73 @@ class Bishop < Piece
   end
 
   def legal_moves(board, current_player, current_position)
-    # implement bishop movement and capturing logic
+    moves_right_down = get_moves_right_down(board, current_player, current_position)
+    moves_left_down = get_moves_left_down(board, current_player, current_position)
+    moves_right_up = get_moves_right_up(board, current_player, current_position)
+    moves_left_up = get_moves_left_up(board, current_player, current_position)
 
+    moves_right_down + moves_left_down + moves_right_up + moves_left_up
+  end
+
+  def get_moves_left_up(board, current_player, current_position)
+    x = current_position.first
+    y = current_position.last
     moves = []
-
-    x = current_position.first
-    y = current_position.last
-
-    until x == 7 || y == 7
-      x += 1
-      y += 1
-      current_piece = board[x][y]
-      moves << [x, y] unless current_piece.color == current_player.color
-      break if current_piece.is_a?(Piece)
-    end
-    x = current_position.first
-    y = current_position.last
-
-    until x == 7 || y == 0
-      x += 1
-      y -= 1
-      current_piece = board[x][y]
-      moves << [x, y] unless current_piece.color == current_player.color
-      break if current_piece.is_a?(Piece)
-    end
-    x = current_position.first
-    y = current_position.last
-
-    until x == 0 || y == 7
-      x -= 1
-      y += 1
-      current_piece = board[x][y]
-      moves << [x, y] unless current_piece.color == current_player.color
-      break if current_piece.is_a?(Piece)
-    end
-    x = current_position.first
-    y = current_position.last
 
     until x == 0 || y == 0
       x -= 1
       y -= 1
-      current_piece = board[x][y]
-      moves << [x, y] unless current_piece.color == current_player.color
-      break if current_piece.is_a?(Piece)
+      current_square = board[x][y]
+      moves << [x, y] unless current_square.color == current_player.color
+      break if current_square.is_a?(Piece)
+    end
+
+    moves
+  end
+
+  def get_moves_right_up(board, current_player, current_position)
+    x = current_position.first
+    y = current_position.last
+    moves = []
+
+    until x == 7 || y == 0
+      x += 1
+      y -= 1
+      current_square = board[x][y]
+      moves << [x, y] unless current_square.color == current_player.color
+      break if current_square.is_a?(Piece)
+    end
+
+    moves
+  end
+
+  def get_moves_left_down(board, current_player, current_position)
+    x = current_position.first
+    y = current_position.last
+    moves = []
+
+    until x == 0 || y == 7
+      x -= 1
+      y += 1
+      current_square = board[x][y]
+      moves << [x, y] unless current_square.color == current_player.color
+      break if current_square.is_a?(Piece)
+    end
+
+    moves
+  end
+
+  def get_moves_right_down(board, current_player, current_position)
+    x = current_position.first
+    y = current_position.last
+    moves = []
+
+    until x == 7 || y == 7
+      x += 1
+      y += 1
+      current_square = board[x][y]
+      moves << [x, y] unless current_square.color == current_player.color
+      break if current_square.is_a?(Piece)
     end
 
     moves
