@@ -56,16 +56,16 @@ class Pawn < Piece
 
     if current_player.color == :black
       diagonal_left = board[x - 1][y + 1] unless x - 1 < 0
-      attacks << [x - 1, y + 1] if diagonal_left.color == :white unless diagonal_left.nil?
+      attacks << [x - 1, y + 1] if !diagonal_left.nil? && diagonal_left.color == :white
 
       diagonal_right = board[x + 1][y + 1] unless x + 1 > 7
-      attacks << [x + 1, y + 1] if diagonal_right.color == :white unless diagonal_right.nil?
+      attacks << [x + 1, y + 1] if !diagonal_right.nil? && diagonal_right.color == :white
     else
       diagonal_left = board[x - 1][y - 1] unless x - 1 < 0
-      attacks << [x - 1, y - 1] if diagonal_left.color == :black unless diagonal_left.nil?
+      attacks << [x - 1, y - 1] if !diagonal_left.nil? && diagonal_left.color == :black
 
       diagonal_right = board[x + 1][y - 1] unless x + 1 > 7
-      attacks << [x + 1, y - 1] if diagonal_right.color == :black unless diagonal_right.nil?
+      attacks << [x + 1, y - 1] if !diagonal_right.nil? && diagonal_right.color == :black
     end
 
     attacks
