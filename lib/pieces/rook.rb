@@ -18,60 +18,60 @@ class Rook < Piece
   def get_moves_left(board, current_player, current_position)
     x = current_position.first
     y = current_position.last
-    moves_left = []
+    moves = []
 
     until x == 0
       x -= 1
       current_square = board[x][y]
-      moves_left << [x, y] unless current_square.color == current_player.color
+      moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
     end
 
-    moves_left
+    moves
   end
 
   def get_moves_right(board, current_player, current_position)
     x = current_position.first
     y = current_position.last
-    moves_right = []
+    moves = []
 
     until x == 7
       x += 1
       current_square = board[x][y]
-      moves_right << [x, y] unless current_square.color == current_player.color
+      moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
     end
 
-    moves_right
+    moves
   end
 
   def get_moves_up(board, current_player, current_position)
     x = current_position.first
     y = current_position.last
-    moves_up = []
+    moves = []
 
     until y == 0
       y -= 1
       current_square = board[x][y]
-      moves_up << [x, y] unless current_square.color == current_player.color
+      moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
     end
 
-    moves_up
+    moves
   end
 
   def get_moves_down(board, current_player, current_position)
     x = current_position.first
     y = current_position.last
-    moves_down = []
+    moves = []
 
     until y == 7
       y += 1
       current_square = board[x][y]
-      moves_down << [x, y] unless current_square.color == current_player.color
+      moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
     end
 
-    moves_down
+    moves
   end
 end
