@@ -7,8 +7,8 @@ class Queen < Piece
   end
 
   def legal_moves(board, current_player, current_position)
-    rook_moves = Rook.new(current_player.color).legal_moves(board, current_player, current_position)
-    bishop_moves = Bishop.new(current_player.color).legal_moves(board, current_player, current_position)
+    rook_moves = Rook.new(@color).legal_moves(board, current_player, current_position)
+    bishop_moves = Bishop.new(@color).legal_moves(board, current_player, current_position)
 
     rook_moves + bishop_moves
   end
