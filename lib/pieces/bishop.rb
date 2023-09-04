@@ -20,9 +20,11 @@ class Bishop < Piece
     y = current_position.last
     moves = []
 
-    until x == 0 || y == 0
+    loop do
       x -= 1
       y -= 1
+      break if x < 0 || y < 0
+
       current_square = board[x][y]
       moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
@@ -36,9 +38,11 @@ class Bishop < Piece
     y = current_position.last
     moves = []
 
-    until x == 7 || y == 0
+    loop do
       x += 1
       y -= 1
+      break if x > 7 || y < 0
+
       current_square = board[x][y]
       moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
@@ -52,9 +56,11 @@ class Bishop < Piece
     y = current_position.last
     moves = []
 
-    until x == 0 || y == 7
+    loop do
       x -= 1
       y += 1
+      break if x < 0 || y > 7
+
       current_square = board[x][y]
       moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
@@ -68,9 +74,11 @@ class Bishop < Piece
     y = current_position.last
     moves = []
 
-    until x == 7 || y == 7
+    loop do
       x += 1
       y += 1
+      break if x > 7 || y > 7
+
       current_square = board[x][y]
       moves << [x, y] unless current_square.color == current_player.color
       break if current_square.is_a?(Piece)
