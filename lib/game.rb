@@ -9,6 +9,7 @@ class Game
     blank_line = true
     loop do
       puts "\n" if blank_line
+      puts check? ? check_message : "\n\n"
       move = prompt_move
 
       if move == 'help'
@@ -96,6 +97,8 @@ class Game
   def legal_move?(move)
     return castle_allowed?(move) if move.include?('castle')
 
+    return false unless escapes_check?(move)
+
     start_position = move.first(2)
     end_position = move.last(2)
 
@@ -105,21 +108,21 @@ class Game
     legal_moves.include?(end_position)
   end
 
-  def move_piece(move)
+  def move_piece(move, board = @board.board)
     start_position = move.first(2)
     end_position = move.last(2)
 
-    piece = @board.board[start_position.first][start_position.last] # gets piece
-    @board.board[end_position.first][end_position.last] = piece # moves piece to new square
-    @board.board[start_position.first][start_position.last] = EmptySquare.new # removes piece from previous square
+    piece = board[start_position.first][start_position.last] # gets piece
+    board[end_position.first][end_position.last] = piece # moves piece to new square
+    board[start_position.first][start_position.last] = EmptySquare.new # removes piece from previous square
 
     if piece.is_a?(Pawn)
       piece.has_moved = true
       if attack_is_en_passant?(piece, start_position, end_position)
         if @current_player.color == :black
-          @board.board[end_position.first][end_position.last - 1] = EmptySquare.new
+          board[end_position.first][end_position.last - 1] = EmptySquare.new
         else
-          @board.board[end_position.first][end_position.last + 1] = EmptySquare.new
+          board[end_position.first][end_position.last + 1] = EmptySquare.new
         end
       end
     end
@@ -127,10 +130,16 @@ class Game
     disallow_all_en_passant
     allow_en_passant(piece, start_position, end_position)
     update_castle_allowed(piece, start_position, end_position)
+
+    board
   end
 
   def switch_player
     @current_player.color = (@current_player.color == :white) ? :black : :white
+  end
+
+  def opponent
+    Player.new(@current_player.opposite_color)
   end
 
   def attack_is_en_passant?(piece, start_position, end_position)
@@ -246,10 +255,51 @@ class Game
     end
   end
 
-  def check?
+  def check?(board = @board.board)
     # detect if player's king is in check (probably at start of turn)
       # if true, restrict player's moves to escape check
       # if false, allow any legal moves
+
+    in_check = false
+    king_position = []
+    board.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        king_position = [i, j] if square.is_a?(King) && square.color == @current_player.color
+      end
+    end
+
+    board.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        square_position = [i, j]
+        if square.color == @current_player.opposite_color
+          legal_moves = square.legal_moves(board, opponent, square_position)
+          in_check = true if legal_moves.include?(king_position)
+        end
+      end
+    end
+    return in_check
+  end
+
+  def escapes_check?(move)
+    new_board = Array.new(8) { Array.new(8, EmptySquare.new) }
+
+    @board.board.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        piece_color = square.color
+        piece_class = square.class
+        if square.is_a?(Piece)
+          new_board[i][j] = piece_class.new(piece_color)
+        end
+      end
+    end
+
+    new_board = move_piece(move, new_board)
+
+    check?(new_board) ? false : true
+  end
+
+  def check_message
+    "\n    #{@current_player}, you are in check!"
   end
 
   def checkmate?
