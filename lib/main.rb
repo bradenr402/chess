@@ -14,6 +14,7 @@ require_relative 'pieces/queen'
 require_relative 'empty_square'
 require_relative 'utilities/get_char'
 require_relative 'utilities/game_rules'
+require_relative 'utilities/castling'
 include GetChar
 require "pry-byebug"
 

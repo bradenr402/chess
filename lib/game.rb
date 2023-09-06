@@ -45,13 +45,19 @@ class Game
       if valid_move?(move) && legal_move?(move)
         if move == 'castle left'
           castle_left
+          @current_player.castle_left_allowed = false
+          @current_player.castle_right_allowed = false
         elsif move == 'castle right'
           castle_right
+          @current_player.castle_left_allowed = false
+          @current_player.castle_right_allowed = false
         else
           move_piece(move)
 
+          start_position = move.first(2)
           end_position = move.last(2)
           piece = @board.board[end_position.first][end_position.last]
+          update_castle_allowed(piece, start_position, end_position)
           if piece.is_a?(Pawn) && pawn_at_opposite_side?(piece, end_position)
             system('clear')
             @board.display
@@ -149,7 +155,6 @@ class Game
 
     disallow_all_en_passant
     allow_en_passant(piece, start_position, end_position)
-    update_castle_allowed(piece, start_position, end_position)
 
     board
   end
@@ -224,18 +229,6 @@ class Game
     end
   end
 
-  def update_castle_allowed(piece, start_position, end_position)
-    if piece.is_a?(King)
-      @current_player.castle_left_allowed = false
-      @current_player.castle_right_allowed = false
-    end
-
-    if piece.is_a?(Rook)
-      @current_player.castle_left_allowed = false if start_position == [0, 0] || start_position == [7, 0]
-      @current_player.castle_right_allowed = false if start_position == [0, 7] || start_position == [7, 7]
-    end
-  end
-
   def square_is_safe?(square)
     @board.board.each_with_index do |row, i|
       row.each_with_index do |piece, j|
@@ -247,86 +240,6 @@ class Game
       end
     end
     true
-  end
-
-  def castle_allowed?(move)
-    return false if check?
-
-    if move == 'castle left'
-      if @current_player.color == :black
-        return @current_player.castle_left_allowed &&
-               @board.board[1][0].is_a?(EmptySquare) &&
-               @board.board[2][0].is_a?(EmptySquare) &&
-               @board.board[3][0].is_a?(EmptySquare) &&
-               square_is_safe?([2, 0]) &&
-               square_is_safe?([3, 0])
-      else
-        return @current_player.castle_left_allowed &&
-               @board.board[1][7].is_a?(EmptySquare) &&
-               @board.board[2][7].is_a?(EmptySquare) &&
-               @board.board[3][7].is_a?(EmptySquare) &&
-               square_is_safe?([2, 7]) &&
-               square_is_safe?([3, 7])
-      end
-    elsif move == 'castle right'
-      if @current_player.color == :black
-        return @current_player.castle_right_allowed &&
-               @board.board[5][0].is_a?(EmptySquare) &&
-               @board.board[6][0].is_a?(EmptySquare) &&
-               square_is_safe?([5, 0]) &&
-               square_is_safe?([6, 0])
-      else
-        return @current_player.castle_right_allowed &&
-               @board.board[5][7].is_a?(EmptySquare) &&
-               @board.board[6][7].is_a?(EmptySquare) &&
-               square_is_safe?([5, 7]) &&
-               square_is_safe?([6, 7])
-      end
-    end
-  end
-
-  def castle_left
-    if @current_player.color == :black
-      rook = @board.board[0][0]
-      king = @board.board[4][0]
-
-      @board.board[3][0] = rook
-      @board.board[0][0] = EmptySquare.new
-
-      @board.board[2][0] = king
-      @board.board[4][0] = EmptySquare.new
-    else
-      rook = @board.board[0][7]
-      king = @board.board[4][7]
-
-      @board.board[3][7] = rook
-      @board.board[0][7] = EmptySquare.new
-
-      @board.board[2][7] = king
-      @board.board[4][7] = EmptySquare.new
-    end
-  end
-
-  def castle_right
-    if @current_player.color == :black
-      rook = @board.board[7][0]
-      king = @board.board[4][0]
-
-      @board.board[5][0] = rook
-      @board.board[7][0] = EmptySquare.new
-
-      @board.board[6][0] = king
-      @board.board[4][0] = EmptySquare.new
-    else
-      rook = @board.board[7][7]
-      king = @board.board[4][7]
-
-      @board.board[5][7] = rook
-      @board.board[7][7] = EmptySquare.new
-
-      @board.board[6][7] = king
-      @board.board[4][7] = EmptySquare.new
-    end
   end
 
   def check?(board = @board.board)
