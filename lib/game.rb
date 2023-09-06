@@ -191,6 +191,8 @@ class Game
   end
 
   def castle_allowed?(move)
+    return false if check?
+
     if move == 'castle left'
       if @current_player.color == :black
         return @current_player.castle_left_allowed &&
@@ -285,28 +287,28 @@ class Game
 
     @board.board.each_with_index do |row, i|
       row.each_with_index do |square, j|
-        piece_color = square.color
-        piece_class = square.class
+        square_class = square.class
         if square.is_a?(Piece)
-          new_board[i][j] = piece_class.new(piece_color)
+          new_board[i][j] = square_class.new(square.color)
         end
       end
     end
 
     new_board = move_piece(move, new_board)
 
-    check?(new_board) ? false : true
+    !check?(new_board)
   end
 
-  def checkmate?
+  def checkmate?(board = @board.board)
     return false unless check?
 
-    @board.board.each_with_index do |row, i|
+    board.each_with_index do |row, i|
       row.each_with_index do |square, j|
         square_position = [i, j]
         if square.color == @current_player.color
-          legal_moves = square.legal_moves(@board.board, @current_player, square_position)
-          legal_moves.each { |move| return false if escapes_check?(move) }
+          legal_moves = square.legal_moves(board, @current_player, square_position)
+          legal_moves.map! { |move| square_position + move }
+          return false if legal_moves.any? { |move| escapes_check?(move) }
         end
       end
     end
