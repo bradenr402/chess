@@ -17,8 +17,9 @@ require_relative 'utilities/game_rules'
 require_relative 'utilities/castling'
 require_relative 'utilities/promotion'
 require_relative 'utilities/en_passant'
+require_relative 'utilities/referee'
 include GetChar
-require "pry-byebug"
+require 'pry-byebug'
 
 def start_game
   loop do
@@ -30,7 +31,7 @@ end
 def play_again?
   loop do
     puts 'Do you want to play again?'
-    puts "#{'[1]'.green} Play another game"
+    puts "#{'[1]'.green} Play again"
     puts "#{'[2]'.red} Exit"
     input = get_char
     return true if input == '1'
