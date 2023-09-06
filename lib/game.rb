@@ -8,6 +8,11 @@ class Game
     introduction
     blank_line = true
     loop do
+      if checkmate?
+        puts "Checkmate, #{@current_player}! #{opponent} wins!"
+        break
+      end
+
       puts "\n" if blank_line
       puts check? ? check_message : "\n\n"
       move = prompt_move
@@ -256,11 +261,6 @@ class Game
   end
 
   def check?(board = @board.board)
-    # detect if player's king is in check (probably at start of turn)
-      # if true, restrict player's moves to escape check
-      # if false, allow any legal moves
-
-    in_check = false
     king_position = []
     board.each_with_index do |row, i|
       row.each_with_index do |square, j|
@@ -273,11 +273,11 @@ class Game
         square_position = [i, j]
         if square.color == @current_player.opposite_color
           legal_moves = square.legal_moves(board, opponent, square_position)
-          in_check = true if legal_moves.include?(king_position)
+          return true if legal_moves.include?(king_position)
         end
       end
     end
-    return in_check
+    false
   end
 
   def escapes_check?(move)
@@ -298,17 +298,27 @@ class Game
     check?(new_board) ? false : true
   end
 
-  def check_message
-    "\n    #{@current_player}, you are in check!"
-  end
-
   def checkmate?
-    # detect checkmate by analyzing all possible moves
-    # and determing if the king has no legal moves left
+    return false unless check?
+
+    @board.board.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        square_position = [i, j]
+        if square.color == @current_player.color
+          legal_moves = square.legal_moves(@board.board, @current_player, square_position)
+          legal_moves.each { |move| return false if escapes_check?(move) }
+        end
+      end
+    end
+    true
   end
 
   def stalemate?
     # detect stalemate
+  end
+
+  def check_message
+    "\n    #{@current_player}, you are in check!"
   end
 
   def title_art
