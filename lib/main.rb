@@ -16,6 +16,7 @@ require_relative 'utilities/get_char'
 require_relative 'utilities/game_rules'
 require_relative 'utilities/castling'
 require_relative 'utilities/promotion'
+require_relative 'utilities/en_passant'
 include GetChar
 require "pry-byebug"
 
