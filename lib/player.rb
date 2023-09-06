@@ -10,8 +10,4 @@ class Player
   def to_s
     @color.to_s.capitalize
   end
-
-  def opposite_color
-    @color == :white ? :black : :white
-  end
 end
