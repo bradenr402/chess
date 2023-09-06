@@ -80,3 +80,14 @@ def stalemate?(board = @board.board)
   end
   possible_moves.empty?
 end
+
+def game_over?
+  if checkmate?
+    puts "Checkmate, #{@current_player}! #{@opponent} wins!"
+    return true
+  elsif stalemate?
+    puts "Stalemate! Game over."
+    return true
+  end
+  false
+end

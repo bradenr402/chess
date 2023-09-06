@@ -12,13 +12,7 @@ class Game
     introduction
     blank_line = true
     loop do
-      if checkmate?
-        puts "Checkmate, #{@current_player}! #{@opponent} wins!"
-        break
-      elsif stalemate?
-        puts "Stalemate! Game over."
-        break
-      end
+      break if game_over?
 
       puts "\n" if blank_line
       puts check? ? "\n    #{@current_player}, you are in check!" : "\n\n"
@@ -42,41 +36,41 @@ class Game
 
       move = format_move(move) unless move.include?('castle')
 
-      if valid_move?(move) && legal_move?(move)
-        if move == 'castle left'
-          castle_left
-          @current_player.castle_left_allowed = false
-          @current_player.castle_right_allowed = false
-        elsif move == 'castle right'
-          castle_right
-          @current_player.castle_left_allowed = false
-          @current_player.castle_right_allowed = false
-        else
-          move_piece(move)
-
-          start_position = move.first(2)
-          end_position = move.last(2)
-          piece = @board.board[end_position.first][end_position.last]
-
-          if piece.is_a?(Pawn) && pawn_at_opposite_side?(piece, end_position)
-            system('clear')
-            @board.display
-            @board.board[end_position.first][end_position.last] = promote(piece)
-          end
-
-          update_castle_allowed(piece, start_position, end_position)
-          disallow_all_en_passant
-          allow_en_passant(piece, start_position, end_position)
-        end
-      else
+      unless valid_move?(move) && legal_move?(move)
         system('clear')
         @board.display
         puts '    Invalid move. Try again.'
         blank_line = false
         next
       end
-      blank_line = true
 
+      if move == 'castle left'
+        castle_left
+        @current_player.castle_left_allowed = false
+        @current_player.castle_right_allowed = false
+      elsif move == 'castle right'
+        castle_right
+        @current_player.castle_left_allowed = false
+        @current_player.castle_right_allowed = false
+      else
+        move_piece(move)
+
+        start_position = move.first(2)
+        end_position = move.last(2)
+        piece = @board.board[end_position.first][end_position.last]
+
+        if piece.is_a?(Pawn) && pawn_at_opposite_side?(piece, end_position)
+          system('clear')
+          @board.display
+          @board.board[end_position.first][end_position.last] = promote(piece)
+        end
+
+        update_castle_allowed(piece, start_position, end_position)
+        disallow_all_en_passant
+        allow_en_passant(piece, start_position, end_position)
+      end
+
+      blank_line = true
       switch_players
       system('clear')
       @board.display
