@@ -195,7 +195,7 @@ class Game
     @board.board.each_with_index do |row, i|
       row.each_with_index do |piece, j|
         square_position = [i, j]
-        if piece.color == @current_player.opposite_color
+        if piece.color == @opponent.color
           legal_moves = piece.legal_moves(@board.board, @opponent, square_position)
           return false if legal_moves.include?(square)
         end
@@ -295,7 +295,7 @@ class Game
     board.each_with_index do |row, i|
       row.each_with_index do |square, j|
         square_position = [i, j]
-        if square.color == @current_player.opposite_color
+        if square.color == @opponent.color
           legal_moves = square.legal_moves(board, @opponent, square_position)
           return true if legal_moves.include?(king_position)
         end
