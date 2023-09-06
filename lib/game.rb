@@ -1,7 +1,11 @@
 class Game
   def initialize
     @board = Board.new
-    @current_player = Player.new(:white)
+    @white_player = Player.new(:white)
+    @black_player = Player.new(:black)
+
+    @current_player = @white_player
+    @opponent = @black_player
   end
 
   def play_game
@@ -9,7 +13,7 @@ class Game
     blank_line = true
     loop do
       if checkmate?
-        puts "Checkmate, #{@current_player}! #{opponent} wins!"
+        puts "Checkmate, #{@current_player}! #{@opponent} wins!"
         break
       end
 
@@ -52,7 +56,7 @@ class Game
       end
       blank_line = true
 
-      switch_player
+      switch_players
       system('clear')
       @board.display
     end
@@ -139,12 +143,9 @@ class Game
     board
   end
 
-  def switch_player
-    @current_player.color = (@current_player.color == :white) ? :black : :white
-  end
-
-  def opponent
-    Player.new(@current_player.opposite_color)
+  def switch_players
+    @current_player = (@current_player.color == :white) ? @black_player : @white_player
+    @opponent = (@opponent.color == :white) ? @black_player : @white_player
   end
 
   def attack_is_en_passant?(piece, start_position, end_position)
@@ -190,6 +191,19 @@ class Game
     end
   end
 
+  def square_is_safe?(square)
+    @board.board.each_with_index do |row, i|
+      row.each_with_index do |piece, j|
+        square_position = [i, j]
+        if piece.color == @current_player.opposite_color
+          legal_moves = piece.legal_moves(@board.board, @opponent, square_position)
+          return false if legal_moves.include?(square)
+        end
+      end
+    end
+    true
+  end
+
   def castle_allowed?(move)
     return false if check?
 
@@ -198,22 +212,30 @@ class Game
         return @current_player.castle_left_allowed &&
                @board.board[1][0].is_a?(EmptySquare) &&
                @board.board[2][0].is_a?(EmptySquare) &&
-               @board.board[3][0].is_a?(EmptySquare)
+               @board.board[3][0].is_a?(EmptySquare) &&
+               square_is_safe?([2, 0]) &&
+               square_is_safe?([3, 0])
       else
         return @current_player.castle_left_allowed &&
                @board.board[1][7].is_a?(EmptySquare) &&
                @board.board[2][7].is_a?(EmptySquare) &&
-               @board.board[3][7].is_a?(EmptySquare)
+               @board.board[3][7].is_a?(EmptySquare) &&
+               square_is_safe?([2, 7]) &&
+               square_is_safe?([3, 7])
       end
     elsif move == 'castle right'
       if @current_player.color == :black
         return @current_player.castle_right_allowed &&
                @board.board[5][0].is_a?(EmptySquare) &&
-               @board.board[6][0].is_a?(EmptySquare)
+               @board.board[6][0].is_a?(EmptySquare) &&
+               square_is_safe?([5, 0]) &&
+               square_is_safe?([6, 0])
       else
         return @current_player.castle_right_allowed &&
                @board.board[5][7].is_a?(EmptySquare) &&
-               @board.board[6][7].is_a?(EmptySquare)
+               @board.board[6][7].is_a?(EmptySquare) &&
+               square_is_safe?([5, 7]) &&
+               square_is_safe?([6, 7])
       end
     end
   end
@@ -274,7 +296,7 @@ class Game
       row.each_with_index do |square, j|
         square_position = [i, j]
         if square.color == @current_player.opposite_color
-          legal_moves = square.legal_moves(board, opponent, square_position)
+          legal_moves = square.legal_moves(board, @opponent, square_position)
           return true if legal_moves.include?(king_position)
         end
       end
