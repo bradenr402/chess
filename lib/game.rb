@@ -18,7 +18,8 @@ class Game
       puts check? ? "\n    #{@current_player}, you are in check!" : "\n\n"
       move = prompt_move
 
-      if move == 'help'
+      case move
+      when 'help'
         system('clear')
         puts how_to_play
         print "    Press any key to continue: ".green
@@ -27,12 +28,12 @@ class Game
         system('clear')
         @board.display
         next
-      elsif move == 'save'
+      when 'save'
         # save game
         break
+      when 'exit'
+        exit
       end
-
-      break if move == 'exit'
 
       move = format_move(move) unless move.include?('castle')
 
