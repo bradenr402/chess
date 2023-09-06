@@ -15,6 +15,7 @@ require_relative 'empty_square'
 require_relative 'utilities/get_char'
 require_relative 'utilities/game_rules'
 require_relative 'utilities/castling'
+require_relative 'utilities/promotion'
 include GetChar
 require "pry-byebug"
 
