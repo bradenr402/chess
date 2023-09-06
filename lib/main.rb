@@ -30,9 +30,9 @@ end
 
 def play_again?
   loop do
-    puts 'Do you want to play again?'
-    puts "#{'[1]'.green} Play again"
-    puts "#{'[2]'.red} Exit"
+    puts '  Do you want to play again?'
+    puts "  #{'[1]'.green} Play again"
+    puts "  #{'[2]'.red} Exit"
     input = get_char
     return true if input == '1'
     return false if input == '2'
