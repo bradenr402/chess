@@ -15,6 +15,9 @@ class Game
       if checkmate?
         puts "Checkmate, #{@current_player}! #{@opponent} wins!"
         break
+      elsif stalemate?
+        puts "Stalemate! Game over."
+        break
       end
 
       puts "\n" if blank_line
@@ -337,8 +340,21 @@ class Game
     true
   end
 
-  def stalemate?
-    # detect stalemate
+  def stalemate?(board = @board.board)
+    possible_moves = []
+
+    board.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        square_position = [i, j]
+        if square.color == @current_player.color
+          legal_moves = square.legal_moves(board, @current_player, square_position)
+          legal_moves.each do |move|
+            possible_moves << move if legal_move?(square_position + move)
+          end
+        end
+      end
+    end
+    possible_moves.empty?
   end
 
   def check_message
