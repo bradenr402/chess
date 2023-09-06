@@ -1,6 +1,8 @@
 class Game
   def initialize
     @board = Board.new
+    @history = [duplicate_board(@board.board)]
+
     @white_player = Player.new(:white)
     @black_player = Player.new(:black)
 
@@ -12,6 +14,13 @@ class Game
     introduction
     blank_line = true
     loop do
+      if threefold_repitition?
+        if claim_draw?
+          puts "\n  Game over. It's a draw.\n\n"
+          break
+        end
+      end
+
       break if game_over?
 
       puts "\n" if blank_line
@@ -75,6 +84,7 @@ class Game
       switch_players
       system('clear')
       @board.display
+      @history << duplicate_board(@board.board)
     end
   end
 
@@ -158,5 +168,19 @@ class Game
     end
 
     board
+  end
+
+  def duplicate_board(board)
+    new_board = Array.new(8) { Array.new(8, EmptySquare.new) }
+
+    board.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        square_class = square.class
+        if square.is_a?(Piece)
+          new_board[i][j] = square_class.new(square.color)
+        end
+      end
+    end
+    new_board
   end
 end

@@ -32,16 +32,7 @@ def check?(board = @board.board)
 end
 
 def escapes_check?(move)
-  new_board = Array.new(8) { Array.new(8, EmptySquare.new) }
-
-  @board.board.each_with_index do |row, i|
-    row.each_with_index do |square, j|
-      square_class = square.class
-      if square.is_a?(Piece)
-        new_board[i][j] = square_class.new(square.color)
-      end
-    end
-  end
+  new_board = duplicate_board(@board.board)
 
   new_board = move_piece(move, new_board)
 
@@ -90,4 +81,30 @@ def game_over?
     return true
   end
   false
+end
+
+def threefold_repitition?
+  current_board_state = duplicate_board(@board.board)
+
+  @history.count { |board| boards_equal?(current_board_state, board) } >= 3
+end
+
+def boards_equal?(board1, board2)
+  board1.each_with_index do |row, i|
+    row.each_index do |j|
+      return false unless board1[i][j].class == board2[i][j].class && board1[i][j].color == board2[i][j].color
+    end
+  end
+  true
+end
+
+def claim_draw?
+  loop do
+    puts "    #{@current_player}, a threefold repitition has occurred. Would you like to claim a draw?"
+    puts "    #{'[Y]'.green} Yes"
+    puts "    #{'[N]'.red} No"
+    choice = get_char
+    return true if choice == 'Y' || choice == 'y'
+    return false if choice == 'N' || choice == 'n'
+  end
 end
