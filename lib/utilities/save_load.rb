@@ -25,7 +25,7 @@ end
 
 def load_game
   if Dir.empty?('saved_games/')
-    puts "  No saved games found."
+    puts "  No saved games found.\n\n"
     sleep(0.75)
     return new_game
   end
@@ -55,7 +55,7 @@ def load_game
 end
 
 def new_game
-  puts "  Starting new game...\n\n"
+  puts "  Starting new game..."
   sleep(0.75)
   game = Game.new
   introduction
