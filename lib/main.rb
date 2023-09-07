@@ -20,6 +20,7 @@ require_relative 'utilities/castling'
 require_relative 'utilities/promotion'
 require_relative 'utilities/en_passant'
 require_relative 'utilities/referee'
+
 require 'pry-byebug'
 
 def start_game
@@ -43,9 +44,8 @@ def choose_game
   puts "    #{'[N]'.blue} Start new game"
   puts "    #{'[L]'.green} Load saved game"
   puts "    #{'[E]'.red} Exit"
-  choice = get_char
 
-  case choice
+  case get_char
   when 'N', 'n'
     return new_game
   when 'L', 'l'

@@ -19,8 +19,6 @@ def save_game(current_game)
     end
     puts "  Game saved to:  #{"save_game#{id}.yml".green}"
   end
-
-
 end
 
 def load_game
@@ -34,9 +32,7 @@ def load_game
   saved_files.sort!.shift(2) # removes . and .. from list
 
   files_hash = {}
-  saved_files.each do |file|
-    files_hash["#{file.split('')[9]}"] = file
-  end
+  saved_files.each { |file| files_hash["#{file.split('')[9]}"] = file }
 
   puts "\n  Which game would you like to load? (Press '#{'N'.blue}' to start a new game instead)"
   files_hash.each { |key, value| puts "    #{"[#{key}]".red} #{value.blue}" }
@@ -57,7 +53,6 @@ end
 def new_game
   puts "  Starting new game..."
   sleep(0.75)
-  game = Game.new
   introduction
-  return game
+  return Game.new
 end
