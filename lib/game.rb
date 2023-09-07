@@ -40,6 +40,8 @@ class Game
         next
       when 'save'
         return 'save'
+      when 'menu'
+        return 'menu'
       when 'exit'
         exit
       end

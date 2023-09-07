@@ -34,7 +34,8 @@ def how_to_play
 
   #{'COMMANDS'.bold.blue}
     #{'help'.bold.green} - Display this screen again.
-    #{'save'.bold.green} - Save and exit the game.
+    #{'save'.bold.green} - Save the game and return to the menu.
+    #{'menu'.bold.green} - Return to the menu without saving.
     #{'exit'.bold.green} - Exit the game without saving.
 
   TEXT
@@ -47,6 +48,7 @@ def introduction
   get_char
 
   system('clear')
+  puts title_art
   puts how_to_play
   print "    Press any key to begin!\n    ".green
   get_char

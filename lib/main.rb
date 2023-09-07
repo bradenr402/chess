@@ -24,11 +24,15 @@ require 'pry-byebug'
 
 def start_game
   loop do
+    system('clear')
+    puts title_art
     @game = choose_game
     result = @game.play_game
     if result == 'save'
       save_game(@game)
-      exit
+      next
+    elsif result == 'menu'
+      next
     end
     break unless play_again?
   end
