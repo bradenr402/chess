@@ -50,7 +50,4 @@ def introduction
   puts how_to_play
   print "    Press any key to begin!\n    ".green
   get_char
-
-  system('clear')
-  @board.display
 end

@@ -11,7 +11,8 @@ class Game
   end
 
   def play_game
-    introduction
+    system('clear')
+    @board.display
     blank_line = true
     loop do
       if threefold_repitition?
@@ -38,8 +39,7 @@ class Game
         @board.display
         next
       when 'save'
-        # save game
-        break
+        return 'save'
       when 'exit'
         exit
       end

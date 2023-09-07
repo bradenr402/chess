@@ -24,19 +24,43 @@ require 'pry-byebug'
 
 def start_game
   loop do
-    @game = Game.new.play_game
+    @game = choose_game
+    result = @game.play_game
+    if result == 'save'
+      save_game(@game)
+      exit
+    end
     break unless play_again?
+  end
+end
+
+def choose_game
+  puts '  What would you like to do?'
+  puts "    #{'[N]'.blue} Start new game"
+  puts "    #{'[L]'.green} Load saved game"
+  puts "    #{'[E]'.red} Exit"
+  choice = get_char
+
+  case choice
+  when 'N', 'n'
+    return new_game
+  when 'L', 'l'
+    return load_game
+  when 'E', 'e'
+    exit
+  else
+    choose_game
   end
 end
 
 def play_again?
   loop do
     puts '  Do you want to play again?'
-    puts "  #{'[1]'.green} Play again"
-    puts "  #{'[2]'.red} Exit"
+    puts "    #{'[Y]'.green} Play again"
+    puts "    #{'[N]'.red} Exit"
     input = get_char
-    return true if input == '1'
-    return false if input == '2'
+    return true if input == 'Y' || input == 'y'
+    return false if input == 'N' || input == 'n'
   end
 end
 
